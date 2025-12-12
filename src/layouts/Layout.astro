@@ -1,6 +1,7 @@
 ---
 import '../styles/global.css';
 import Header from '../components/Header.astro';
+import CookieConsent from '../components/CookieConsent.astro';
 
 interface Props {
   title: string;
@@ -38,6 +39,7 @@ const { title, description = 'Gaworski Product & Solution Design | Product Rescu
         </aside>
       </footer>
     </div>
+    <CookieConsent />
     <script is:inline>
       // Smooth scrolling for anchor links
       document.addEventListener('DOMContentLoaded', () => {

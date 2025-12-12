@@ -66,6 +66,22 @@ npm run dev
 
 Visit `http://localhost:4321` to see the site.
 
+#### Environment Variables
+
+Create a `.env` file in the root directory (you can copy `.env.example` as a template):
+
+```bash
+cp .env.example .env
+```
+
+Then add your Google Analytics tracking ID:
+
+```
+PUBLIC_GA_TRACKING_ID=G-XXXXXXXXXX
+```
+
+**Note:** The Google Analytics tracking ID is optional. If not provided, the cookie consent banner will still appear, but analytics will not be loaded.
+
 ### Build
 
 ```bash
@@ -87,6 +103,8 @@ npm run preview
 - **Optimized images** - WebP and JPEG versions with proper sizing
 - **Smooth scrolling navigation** - Anchor links with smooth scroll behavior
 - **Performance optimized** - Fast loading times and Core Web Vitals compliance
+- **GDPR-compliant cookie consent** - Vanilla Cookie Consent integration with Google Analytics support
+- **Privacy-first analytics** - Google Analytics only loads with explicit user consent
 
 ## Development Workflow
 
