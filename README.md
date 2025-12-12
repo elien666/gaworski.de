@@ -66,6 +66,22 @@ npm run dev
 
 Visit `http://localhost:4321` to see the site.
 
+#### Environment Variables
+
+Create a `.env` file in the root directory and add your Google Analytics tracking ID:
+
+```bash
+echo "PUBLIC_GA_TRACKING_ID=G-XXXXXXXXXX" > .env
+```
+
+Or manually create the file with:
+
+```
+PUBLIC_GA_TRACKING_ID=G-XXXXXXXXXX
+```
+
+**Note:** The Google Analytics tracking ID is optional. If not provided, the cookie consent banner will still appear, but analytics will not be loaded.
+
 ### Build
 
 ```bash
@@ -87,6 +103,8 @@ npm run preview
 - **Optimized images** - WebP and JPEG versions with proper sizing
 - **Smooth scrolling navigation** - Anchor links with smooth scroll behavior
 - **Performance optimized** - Fast loading times and Core Web Vitals compliance
+- **GDPR-compliant cookie consent** - Vanilla Cookie Consent integration with Google Analytics support
+- **Privacy-first analytics** - Google Analytics only loads with explicit user consent
 
 ## Development Workflow
 
@@ -96,18 +114,12 @@ npm run preview
 
 The website is automatically deployed when a new release is created. The deployment process:
 
-1. Create a new release with a version tag (e.g., `v1.0.0`)
+1. Create a new release with a version tag (e.g., `v1.0`)
 2. The GitHub Actions workflow will automatically:
    - Build the site
    - Deploy it to the production server
 
-The `dist/` folder contains static files that can be deployed to any static hosting service:
-
-- GitHub Pages
-- Netlify
-- Vercel
-- Cloudflare Pages
-- Any static hosting provider
+The `dist/` folder contains static files that can be deployed to any static hosting service.
 
 ## Learn More
 
@@ -117,4 +129,3 @@ The `dist/` folder contains static files that can be deployed to any static host
 
 ---
 
-© 2025 Björn Gaworski-Dammann. All rights reserved.

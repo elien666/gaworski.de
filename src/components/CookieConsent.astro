@@ -1,0 +1,20 @@
+---
+// Cookie Consent Component using Vanilla Cookie Consent
+// This component initializes the cookie consent banner with GDPR-compliant settings
+// All assets are bundled by Astro and served as first-party
+
+// Get GA tracking ID from environment variable
+const gaTrackingId = import.meta.env.PUBLIC_GA_TRACKING_ID || '';
+---
+
+<!-- 
+  Set global variable and import the script as a module
+  Astro will bundle vanilla-cookieconsent and serve everything from your domain (first-party)
+-->
+<script define:vars={{ gaTrackingId }}>
+  // Set global variable for the imported script to access
+  window.__GA_TRACKING_ID__ = gaTrackingId;
+</script>
+<script>
+  import '../scripts/cookie-consent.ts';
+</script>

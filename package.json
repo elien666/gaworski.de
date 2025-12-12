@@ -13,7 +13,8 @@
   "dependencies": {
     "@astrojs/check": "^0.9.6",
     "astro": "^5.16.5",
-    "typescript": "^5.9.3"
+    "typescript": "^5.9.3",
+    "vanilla-cookieconsent": "^3.1.0"
   },
   "devDependencies": {
     "@tailwindcss/vite": "^4.1.18",
