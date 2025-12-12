@@ -31,7 +31,7 @@ const { title, description = 'Gaworski Product & Solution Design | Product Rescu
       </main>
       <footer class="footer footer-center bg-[#414141] text-gray-400 py-6 md:py-8">
         <aside>
-          <p class="text-sm md:text-base">© 2025 Gaworski Product & Solution Design. All rights reserved. | Hamburg, Germany.</p>
+          <p class="text-sm md:text-base">© 2025 Gaworski Product & Solution Design. | Hamburg, Germany.</p>
         </aside>
       </footer>
     </div>
@@ -89,6 +89,14 @@ const { title, description = 'Gaworski Product & Solution Design | Product Rescu
         sections.forEach(section => {
           observer.observe(section);
         });
+
+        // Double-click logo to navigate to secret route
+        const logoContainer = document.querySelector('#logo-container');
+        if (logoContainer) {
+          logoContainer.addEventListener('dblclick', () => {
+            window.location.href = '/secret-do-not-look/';
+          });
+        }
       });
     </script>
   </body>
