@@ -80,10 +80,15 @@ function removeGoogleAnalytics() {
   delete (window as any).gtag;
 }
 
+// Helper function to check Cal status
+function checkCalStatus() {
+  return (window as any).Cal && (window as any).Cal.loaded;
+}
+
 // Function to load Cal.com embed
 function loadCalCom() {
   // Check if Cal.com is already loaded and initialized
-  if ((window as any).Cal && (window as any).Cal.loaded) {
+  if (checkCalStatus()) {
     // Re-initialize if already loaded but check if namespace exists
     if ((window as any).Cal.ns && (window as any).Cal.ns["15min"]) {
       (window as any).Cal.ns["15min"]("inline", {
@@ -97,9 +102,24 @@ function loadCalCom() {
     return;
   }
 
+  // Check if script is already in the DOM
+  const existingScript = document.querySelector('script[src*="app.cal.eu/embed/embed.js"]');
+  if (existingScript) {
+    // Script is loading, wait for it and then initialize
+    const checkCal = setInterval(() => {
+      if (checkCalStatus()) {
+        clearInterval(checkCal);
+        initializeCalComEmbed();
+      }
+    }, 50);
+    // Timeout after 5 seconds
+    setTimeout(() => clearInterval(checkCal), 5000);
+    return;
+  }
+
   // Initialize Cal.com embed loader
-  (function (C, A, L) { 
-    let p = function (a, ar) { a.q.push(ar); }; 
+  (function (C: any, A: string, L: string) { 
+    let p = function (a: any, ar: any) { a.q.push(ar); }; 
     let d = C.document; 
     C.Cal = C.Cal || function () { 
       let cal = C.Cal; 
@@ -107,13 +127,20 @@ function loadCalCom() {
       if (!cal.loaded) { 
         cal.ns = {}; 
         cal.q = cal.q || []; 
-        d.head.appendChild(d.createElement("script")).src = A; 
+        const script = d.createElement("script");
+        script.src = A;
+        script.onload = () => {
+          // Wait a bit for Cal to initialize, then set up the embed
+          setTimeout(initializeCalComEmbed, 100);
+        };
+        d.head.appendChild(script);
         cal.loaded = true; 
       } 
       if (ar[0] === L) { 
         const api = function () { p(api, arguments); }; 
         const namespace = ar[1]; 
-        api.q = api.q || []; 
+        const apiQueue: any[] = (api as any).q || [];
+        (api as any).q = apiQueue;
         if(typeof namespace === "string"){
           cal.ns[namespace] = cal.ns[namespace] || api;
           p(cal.ns[namespace], ar);
@@ -130,12 +157,16 @@ function loadCalCom() {
 
   (window as any).Cal.ns = (window as any).Cal.ns || {};
   if (!(window as any).Cal.ns["15min"]) {
+    const queue: any[] = [];
     (window as any).Cal.ns["15min"] = function(...args: any[]) {
-      ((window as any).Cal.ns["15min"].q = (window as any).Cal.ns["15min"].q || []).push(args);
+      queue.push(args);
     };
-    (window as any).Cal.ns["15min"].q = [];
+    (window as any).Cal.ns["15min"].q = queue;
   }
-  
+}
+
+// Helper function to initialize Cal.com embed
+function initializeCalComEmbed() {
   (window as any).Cal.ns["15min"]("inline", {
     elementOrSelector:"#my-cal-inline-15min",
     config: {"layout":"month_view"},
@@ -144,10 +175,8 @@ function loadCalCom() {
 
   (window as any).Cal.ns["15min"]("ui", {"hideEventTypeDetails":false,"layout":"month_view"});
 
-  // Dispatch event after a short delay to allow script to load
-  setTimeout(() => {
-    window.dispatchEvent(new CustomEvent('calcom-loaded'));
-  }, 100);
+  // Dispatch event to notify that Cal.com is loaded
+  window.dispatchEvent(new CustomEvent('calcom-loaded'));
 }
 
 // Function to remove Cal.com embed
