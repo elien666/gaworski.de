@@ -11,7 +11,7 @@ This is the source code for my personal marketing website, showcasing my experti
 ## Connect
 
 - **LinkedIn:** [linkedin.com/in/gaworski](https://linkedin.com/in/gaworski)
-- **Email:** bjoern@gaworski.de
+- **Email:** info@gaworski.de
 
 ## Repository Status
 

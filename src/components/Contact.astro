@@ -13,7 +13,7 @@ import { Cookie } from '@lucide/astro';
     </div>
     
     <!-- Cal inline embed code - loaded conditionally based on cookie consent -->
-    <div class="calcom-embed-wrapper bg-white rounded-lg shadow-xl overflow-hidden">
+    <div class="calcom-embed-wrapper bg-white rounded-lg shadow-xl overflow-hidden mb-8">
       <div style="width:100%;height:100%;" id="my-cal-inline-15min">
         <div class="calcom-consent-placeholder" style="padding: 3rem; text-align: center; color: #666; display: flex; flex-direction: column; justify-content: center; align-items: center; min-height: 600px; width: 100%;">
           <div class="cookie-icon-wrapper" style="margin-bottom: 1.5rem;">
@@ -23,6 +23,13 @@ import { Cookie } from '@lucide/astro';
           <button id="calcom-cookie-preferences-btn" class="cookie-preferences-btn">Manage Cookie Preferences</button>
         </div>
       </div>
+    </div>
+
+    <!-- Alternative contact methods -->
+    <div class="text-center">
+      <p class="text-gray-300 text-lg mb-4">
+        Prefer to reach out directly? You can also connect with me on <a href="https://linkedin.com/in/gaworski" target="_blank" rel="noopener noreferrer" class="text-secondary hover:text-secondary-focus font-semibold underline transition duration-150">LinkedIn</a> or send me an <a href="mailto:info@gaworski.de" class="text-secondary hover:text-secondary-focus font-semibold underline transition duration-150">email</a>.
+      </p>
     </div>
   </div>
 </section>
