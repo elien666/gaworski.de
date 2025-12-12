@@ -29,9 +29,12 @@ const { title, description = 'Gaworski Product & Solution Design | Product Rescu
       <main>
         <slot />
       </main>
-      <footer class="footer footer-center bg-gray-800 text-gray-400 py-6 md:py-8">
+      <footer class="footer footer-center bg-[#414141] text-gray-400 py-6 md:py-8">
         <aside>
-          <p class="text-sm md:text-base">© 2025 Gaworski Product & Solution Design. All rights reserved. | Hamburg, Germany.</p>
+          <p class="text-sm md:text-base">© 2025 Gaworski Product & Solution Design. | Hamburg, Germany.</p>
+          <p class="text-sm md:text-base mt-2">
+            <a href="/imprint" class="hover:text-white transition duration-150">Imprint</a>
+          </p>
         </aside>
       </footer>
     </div>
@@ -89,6 +92,16 @@ const { title, description = 'Gaworski Product & Solution Design | Product Rescu
         sections.forEach(section => {
           observer.observe(section);
         });
+
+        // Double-click about section headshot to navigate to secret route
+        const aboutHeadshotContainer = document.querySelector('#about-headshot-container');
+        if (aboutHeadshotContainer) {
+          aboutHeadshotContainer.addEventListener('dblclick', (e) => {
+            e.preventDefault();
+            e.stopPropagation();
+            window.location.href = '/secret-do-not-look/';
+          });
+        }
       });
     </script>
   </body>

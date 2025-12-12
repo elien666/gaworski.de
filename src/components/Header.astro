@@ -1,6 +1,6 @@
 ---
 import { Image } from 'astro:assets';
-import bandwhiteLogo from '../assets/bandwhite-logo.png';
+import logo from '../assets/logo.svg';
 
 interface Props {
   showNav?: boolean;
@@ -9,26 +9,28 @@ interface Props {
 const { showNav = true } = Astro.props;
 ---
 
-<header class="sticky top-0 z-50 bg-white shadow-md">
+<header class="sticky top-0 z-50 bg-white">
   <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4 flex justify-between items-center">
     <!-- Logo/Name -->
-    <div class="flex items-center gap-3">
-      <Image 
-        src={bandwhiteLogo} 
-        alt="Gaworski Product & Solution Design Logo" 
-        width={50}
-        height={50}
-        class="object-contain h-[50px]"
-      />
-      <div class="flex flex-col justify-center h-[50px]">
-        <div class="text-2xl sm:text-3xl font-extrabold text-gray-900 font-headline leading-tight">
-          <span class="text-primary">Gaworski</span>
+    <a href="/" class="flex items-center gap-3 cursor-pointer">
+      <div id="logo-container">
+        <Image 
+          src={logo} 
+          alt="Gaworski Product & Solution Design Logo" 
+          width={50}
+          height={50}
+          class="object-contain h-[50px] w-[50px]"
+        />
+      </div>
+      <div class="flex flex-col justify-center">
+        <div class="text-2xl sm:text-3xl font-extrabold text-gray-900 font-headline leading-tight -mt-2">
+          <span class="text-primary">gaworski</span>
         </div>
-        <div class="text-xs sm:text-sm text-gray-500 font-normal leading-tight">
+        <div class="text-xs sm:text-sm text-gray-500 font-normal leading-tight -mt-0.5">
           Product & Solution Design
         </div>
       </div>
-    </div>
+    </a>
     <!-- Navigation (Simple for Solopreneur site) -->
     {showNav && (
       <>
