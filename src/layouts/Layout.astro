@@ -6,22 +6,70 @@ interface Props {
   title: string;
   description?: string;
   showNav?: boolean;
+  image?: string;
+  type?: string;
 }
 
-const { title, description = 'Gaworski Product & Solution Design | Product Rescue & Acceleration', showNav = true } = Astro.props;
+const { 
+  title, 
+  description = 'Gaworski Product & Solution Design | Product Rescue & Acceleration', 
+  showNav = true,
+  image = '/android-chrome-512x512.png',
+  type = 'website'
+} = Astro.props;
+
+const siteUrl = 'https://gaworski.de';
+const fullTitle = title.includes('Gaworski') ? title : `${title} | Gaworski Product & Solution Design`;
 ---
 
 <!doctype html>
 <html lang="en" data-theme="gaworski">
   <head>
     <meta charset="UTF-8" />
-    <meta name="description" content={description} />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
     <meta name="generator" content={Astro.generator} />
+    
+    <!-- Primary Meta Tags -->
+    <title>{fullTitle}</title>
+    <meta name="title" content={fullTitle} />
+    <meta name="description" content={description} />
+    <meta name="author" content="Björn Gaworski-Dammann" />
+    
+    <!-- Favicons -->
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png" />
+    <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png" />
+    <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png" />
+    <link rel="icon" type="image/png" sizes="192x192" href="/android-chrome-192x192.png" />
+    <link rel="icon" type="image/png" sizes="512x512" href="/android-chrome-512x512.png" />
+    <link rel="shortcut icon" href="/favicon.ico" />
+    
+    <!-- Web App Manifest -->
+    <link rel="manifest" href="/site.webmanifest" />
+    
+    <!-- Open Graph / Facebook -->
+    <meta property="og:type" content={type} />
+    <meta property="og:url" content={siteUrl} />
+    <meta property="og:title" content={fullTitle} />
+    <meta property="og:description" content={description} />
+    <meta property="og:image" content={`${siteUrl}${image}`} />
+    <meta property="og:site_name" content="Gaworski Product & Solution Design" />
+    <meta property="og:locale" content="en_US" />
+    
+    <!-- Twitter -->
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:url" content={siteUrl} />
+    <meta name="twitter:title" content={fullTitle} />
+    <meta name="twitter:description" content={description} />
+    <meta name="twitter:image" content={`${siteUrl}${image}`} />
+    
+    <!-- Additional Meta Tags -->
+    <meta name="theme-color" content="#414141" />
+    <meta name="msapplication-TileColor" content="#414141" />
+    <meta name="msapplication-TileImage" content="/android-chrome-192x192.png" />
+    
     <!-- Google Fonts -->
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700&family=Fira+Sans:wght@400;600;700&display=swap" rel="stylesheet" />
-    <title>{title}</title>
   </head>
   <body class="antialiased text-gray-800 font-sans">
     <div class="min-h-screen bg-base-100">
