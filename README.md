@@ -1,13 +1,28 @@
-# gaworski.de - Personal Marketing, CV and Portfolio
+# gaworski.de
 
-A simple static website built with Astro, Tailwind CSS, and DaisyUI.
+Personal website and portfolio for **Björn Gaworski-Dammann** - Product & Solution Designer specializing in Product Rescue & Acceleration.
+
+🌐 **Live Site:** [gaworski.de](https://gaworski.de)
+
+## About
+
+This is the source code for my personal marketing website, showcasing my expertise in rescuing stalled product initiatives and accelerating high-stakes software projects. The site highlights my 6-Week Product Rescue Sprint service and demonstrates my approach to product strategy and solution design.
+
+## Connect
+
+- **LinkedIn:** [linkedin.com/in/gaworski](https://linkedin.com/in/gaworski)
+- **Email:** bjoern@gaworski.de
+
+## Repository Status
+
+This is a **public repository** for transparency and code visibility. While the code is open for viewing and learning, this is a personal project and I'm not actively seeking collaborators or contributions. Feel free to browse the code, learn from it, or use it as inspiration for your own projects.
 
 ## Tech Stack
 
-- **Astro** v5.16.5 - Static site generator
-- **Tailwind CSS** v4.1.18 - Utility-first CSS framework
-- **DaisyUI** v5.5.13 - Component library for Tailwind CSS
-- **TypeScript** - Built-in support
+- **[Astro](https://astro.build)** v5.16.5 - Static site generator for optimal performance
+- **[Tailwind CSS](https://tailwindcss.com)** v4.1.18 - Utility-first CSS framework
+- **[DaisyUI](https://daisyui.com)** v5.5.13 - Component library for Tailwind CSS
+- **TypeScript** - Type-safe development
 
 ## Project Structure
 
@@ -15,12 +30,13 @@ A simple static website built with Astro, Tailwind CSS, and DaisyUI.
 /
 ├── public/          # Static assets (favicon, etc.)
 ├── src/
-│   ├── assets/      # Images, fonts, etc.
+│   ├── assets/      # Optimized images (headshots, logos)
 │   ├── components/  # Reusable Astro components
+│   │   ├── Header.astro
 │   │   ├── Hero.astro
+│   │   ├── Services.astro
+│   │   ├── TheMethod.astro
 │   │   ├── About.astro
-│   │   ├── CV.astro
-│   │   ├── Portfolio.astro
 │   │   └── Contact.astro
 │   ├── layouts/     # Layout components
 │   │   └── Layout.astro
@@ -31,11 +47,15 @@ A simple static website built with Astro, Tailwind CSS, and DaisyUI.
 │   └── styles/      # Global styles
 │       └── global.css
 ├── astro.config.mjs # Astro configuration
-├── tailwind.config.mjs # Tailwind + DaisyUI configuration
 └── package.json
 ```
 
 ## Getting Started
+
+### Prerequisites
+
+- Node.js 18+ 
+- npm or yarn
 
 ### Development
 
@@ -44,7 +64,7 @@ npm install
 npm run dev
 ```
 
-Visit `http://localhost:4321` to see your site.
+Visit `http://localhost:4321` to see the site.
 
 ### Build
 
@@ -52,43 +72,38 @@ Visit `http://localhost:4321` to see your site.
 npm run build
 ```
 
-This creates a `dist/` folder with your static site ready to deploy.
+This creates a `dist/` folder with static files ready for deployment.
 
-### Preview
+### Preview Production Build
 
 ```bash
 npm run preview
 ```
 
-Preview your production build locally.
-
 ## Features
 
-- Zero JavaScript by default (optimal performance)
-- DaisyUI components for beautiful, consistent UI
-- Responsive design out of the box
-- Smooth scrolling navigation
-- Form handling with validation
-- Fade-in animations on scroll
-- Dark/light theme support (DaisyUI)
-
-## Customization
-
-- Edit components in `src/components/` to customize sections
-- Modify `tailwind.config.mjs` to customize DaisyUI themes
-- Update `src/layouts/Layout.astro` to change the overall layout
-- Add your content in the respective component files
+- **Zero JavaScript by default** - Optimal performance with minimal client-side JS
+- **Responsive design** - Mobile-first approach with Tailwind CSS
+- **Optimized images** - WebP and JPEG versions with proper sizing
+- **Smooth scrolling navigation** - Anchor links with smooth scroll behavior
+- **Performance optimized** - Fast loading times and Core Web Vitals compliance
 
 ## Deployment
 
-The `dist/` folder contains static files that can be deployed to:
+The `dist/` folder contains static files that can be deployed to any static hosting service:
+
 - GitHub Pages
 - Netlify
 - Vercel
-- Any static hosting service
+- Cloudflare Pages
+- Any static hosting provider
 
 ## Learn More
 
 - [Astro Documentation](https://docs.astro.build)
 - [Tailwind CSS Documentation](https://tailwindcss.com/docs)
 - [DaisyUI Documentation](https://daisyui.com/docs)
+
+---
+
+© 2025 Björn Gaworski-Dammann. All rights reserved.
