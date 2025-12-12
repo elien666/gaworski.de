@@ -126,3 +126,15 @@ jobs:
             docker compose build
             docker compose up -d --force-recreate
 
+      - name: Build and restart Docker Compose (2nd folder)
+        uses: appleboy/ssh-action@v1.0.3
+        with:
+          host: ${{ secrets.DEPLOY_HOST }}
+          username: ${{ secrets.DEPLOY_USER }}
+          key: ${{ secrets.DEPLOY_SSH_KEY }}
+          port: ${{ steps.ssh_port.outputs.port }}
+          script: |
+            cd ${{ secrets.DOCKER_COMPOSE_PATH_2 }}
+            docker compose build
+            docker compose up -d --force-recreate
+
