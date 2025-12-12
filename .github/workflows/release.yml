@@ -41,14 +41,24 @@ jobs:
           zip -r ../dist.zip .
           cd ..
 
-      - name: Create GitHub release
-        uses: softprops/action-gh-release@v1
-        with:
-          tag_name: ${{ steps.tag.outputs.tag_name }}
-          name: Release ${{ steps.tag.outputs.tag_name }}
-          files: dist.zip
-          draft: false
-          prerelease: false
+      - name: Upload release asset
+        run: |
+          TAG_NAME=${{ steps.tag.outputs.tag_name }}
+          ASSET_NAME="dist-${TAG_NAME}.zip"
+          
+          # Get the release ID for the tag
+          RELEASE_ID=$(gh api repos/${{ github.repository }}/releases/tags/${TAG_NAME} --jq .id 2>/dev/null || echo "")
+          
+          if [ -z "$RELEASE_ID" ]; then
+            echo "Error: Release for tag ${TAG_NAME} does not exist. Please create the release via GitHub UI first."
+            exit 1
+          fi
+          
+          # Rename the zip file with version tag
+          mv dist.zip "$ASSET_NAME"
+          
+          # Upload the asset to the existing release
+          gh release upload "${TAG_NAME}" "$ASSET_NAME" --clobber
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
