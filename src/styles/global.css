@@ -1,5 +1,50 @@
 @import "tailwindcss";
-@plugin "daisyui";
+@plugin "daisyui" {
+  themes: gaworski --default, light, dark;
+}
+
+/* Font configuration - easily changeable */
+@theme {
+  --font-family-sans: 'Source Sans 3', sans-serif;
+  --font-family-headline: 'Poppins', sans-serif;
+}
+
+@plugin "daisyui/theme" {
+  name: "gaworski";
+  default: true;
+  prefersdark: false;
+  color-scheme: "light";
+  --color-base-100: oklch(98% 0 0);
+  --color-base-200: oklch(100% 0 0);
+  --color-base-300: oklch(92% 0 0);
+  --color-base-content: oklch(30% 0.01 250);
+  --color-primary: oklch(25% 0.15 250);
+  --color-primary-content: oklch(95% 0 0);
+  --color-primary-focus: oklch(18% 0.12 250);
+  --color-secondary: oklch(75% 0.15 200);
+  --color-secondary-content: oklch(20% 0.05 200);
+  --color-secondary-focus: oklch(65% 0.12 200);
+  --color-accent: oklch(75% 0.15 200);
+  --color-accent-content: oklch(20% 0.05 200);
+  --color-neutral: oklch(30% 0.01 250);
+  --color-neutral-content: oklch(95% 0 0);
+  --color-info: oklch(75% 0.15 200);
+  --color-info-content: oklch(20% 0.05 200);
+  --color-success: oklch(70% 0.15 160);
+  --color-success-content: oklch(25% 0.08 160);
+  --color-warning: oklch(75% 0.15 70);
+  --color-warning-content: oklch(30% 0.10 70);
+  --color-error: oklch(65% 0.20 15);
+  --color-error-content: oklch(95% 0 0);
+  --radius-selector: 0.5rem;
+  --radius-field: 0.25rem;
+  --radius-box: 0.5rem;
+  --size-selector: 0.25rem;
+  --size-field: 0.25rem;
+  --border: 1px;
+  --depth: 1;
+  --noise: 0;
+}
 
 /* Custom animations */
 @keyframes fadeIn {
@@ -15,6 +60,25 @@
 
 .animate-fade-in {
   animation: fadeIn 0.6s ease-out forwards;
+}
+
+/* Hero gradient text effect - uses primary (#0F2C67) to secondary (#00C4CC) */
+.text-hero-gradient {
+  background-image: linear-gradient(to right, #0F2C67, #00C4CC);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  text-fill-color: transparent;
+}
+
+/* Service card hover effects */
+.service-card {
+  transition: all 0.3s ease-in-out;
+}
+
+.service-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 15px 30px rgba(0, 0, 0, 0.1);
 }
 
 /* Smooth scroll behavior */

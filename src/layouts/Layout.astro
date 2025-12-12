@@ -1,47 +1,36 @@
 ---
 import '../styles/global.css';
+import Header from '../components/Header.astro';
 
 interface Props {
   title: string;
   description?: string;
 }
 
-const { title, description = 'Personal marketing, CV and portfolio' } = Astro.props;
+const { title, description = 'Gaworski Product & Solution Design | Product Rescue & Acceleration' } = Astro.props;
 ---
 
 <!doctype html>
-<html lang="en" data-theme="light">
+<html lang="en" data-theme="gaworski">
   <head>
     <meta charset="UTF-8" />
     <meta name="description" content={description} />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
     <meta name="generator" content={Astro.generator} />
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@700;800&family=Source+Sans+3:wght@400;600;700&display=swap" rel="stylesheet" />
     <title>{title}</title>
   </head>
-  <body>
+  <body class="antialiased text-gray-800 font-sans">
     <div class="min-h-screen bg-base-100">
-      <nav class="navbar bg-base-200 shadow-lg">
-        <div class="container mx-auto px-4">
-          <div class="flex-1">
-            <a class="btn btn-ghost text-xl" href="/">gaworski.de</a>
-          </div>
-          <div class="flex-none">
-            <ul class="menu menu-horizontal px-1">
-              <li><a href="#about">About</a></li>
-              <li><a href="#cv">CV</a></li>
-              <li><a href="#portfolio">Portfolio</a></li>
-              <li><a href="#contact">Contact</a></li>
-            </ul>
-          </div>
-        </div>
-      </nav>
+      <Header />
       <main>
         <slot />
       </main>
-      <footer class="footer footer-center bg-base-200 text-base-content p-10">
+      <footer class="footer footer-center bg-gray-800 text-gray-400 py-6 md:py-8">
         <aside>
-          <p>© 2024 gaworski.de. All rights reserved.</p>
+          <p class="text-sm md:text-base">© 2025 Gaworski Product & Solution Design. All rights reserved. | Hamburg, Germany.</p>
         </aside>
       </footer>
     </div>
