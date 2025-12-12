@@ -111,7 +111,7 @@ jobs:
           port: ${{ steps.ssh_port.outputs.port }}
           script: |
             mkdir -p ${{ secrets.DEPLOY_PATH }}
-            cp -r /tmp/dist-deploy/* ${{ secrets.DEPLOY_PATH }}/
+            cp -r /tmp/dist-deploy/dist/* ${{ secrets.DEPLOY_PATH }}/
             rm -rf /tmp/dist-deploy
 
       - name: Build and restart Docker Compose
