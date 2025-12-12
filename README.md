@@ -68,13 +68,13 @@ Visit `http://localhost:4321` to see the site.
 
 #### Environment Variables
 
-Create a `.env` file in the root directory (you can copy `.env.example` as a template):
+Create a `.env` file in the root directory and add your Google Analytics tracking ID:
 
 ```bash
-cp .env.example .env
+echo "PUBLIC_GA_TRACKING_ID=G-XXXXXXXXXX" > .env
 ```
 
-Then add your Google Analytics tracking ID:
+Or manually create the file with:
 
 ```
 PUBLIC_GA_TRACKING_ID=G-XXXXXXXXXX
