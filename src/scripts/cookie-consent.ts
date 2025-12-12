@@ -96,6 +96,28 @@ function clearCalQueueIfElementMissing() {
   }
 }
 
+// Centralized function to handle consent changes (called from onConsent and when preferences modal closes)
+function handleConsentChange() {
+  const analyticsConsent = CookieConsent.acceptedCategory('analytics');
+  const functionalityConsent = CookieConsent.acceptedCategory('functionality');
+  
+  if (analyticsConsent && gaTrackingId) {
+    // Load Google Analytics only if consent is given
+    loadGoogleAnalytics(gaTrackingId);
+  } else {
+    // Remove GA if consent is withdrawn
+    removeGoogleAnalytics();
+  }
+
+  if (functionalityConsent) {
+    // Load Cal.com only if consent is given
+    loadCalCom();
+  } else {
+    // Remove Cal.com if consent is withdrawn
+    removeCalCom();
+  }
+}
+
 // Function to load Cal.com embed
 function loadCalCom() {
   // First check if the target element exists - only initialize if it does
@@ -488,28 +510,16 @@ CookieConsent.run({
     }
   },
   onConsent: ({ cookie }) => {
-    // This callback is triggered when consent is given or changed
-    const analyticsConsent = CookieConsent.acceptedCategory('analytics');
-    const functionalityConsent = CookieConsent.acceptedCategory('functionality');
-    
-    if (analyticsConsent && gaTrackingId) {
-      // Load Google Analytics only if consent is given
-      loadGoogleAnalytics(gaTrackingId);
-    } else {
-      // Remove GA if consent is withdrawn
-      removeGoogleAnalytics();
-    }
-
-    if (functionalityConsent) {
-      // Load Cal.com only if consent is given
-      loadCalCom();
-    } else {
-      // Remove Cal.com if consent is withdrawn
-      removeCalCom();
-    }
+    // This callback is triggered when consent is given or changed (including on page load)
+    handleConsentChange();
+  },
+  onChange: ({ cookie, changedCategories, changedServices }) => {
+    // This callback is triggered when the user modifies their preferences after initial consent
+    // This handles changes made in the preferences modal
+    handleConsentChange();
   },
   onFirstConsent: ({ cookie }) => {
-    // This callback is triggered on first consent
+    // This callback is triggered on first consent only
     const analyticsConsent = CookieConsent.acceptedCategory('analytics');
     const functionalityConsent = CookieConsent.acceptedCategory('functionality');
     
@@ -577,4 +587,13 @@ declare global {
 window.loadCalCom = loadCalCom;
 window.removeCalCom = removeCalCom;
 window.openCookiePreferences = openCookiePreferences;
+
+// Also listen to the onChange event using the custom event listener as a backup
+// This ensures we catch preference changes even if the callback isn't triggered
+document.addEventListener('DOMContentLoaded', () => {
+  window.addEventListener('cc:onChange', ({ detail }: any) => {
+    // User modified preferences in the preferences modal
+    handleConsentChange();
+  });
+});
 
