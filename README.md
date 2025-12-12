@@ -88,7 +88,18 @@ npm run preview
 - **Smooth scrolling navigation** - Anchor links with smooth scroll behavior
 - **Performance optimized** - Fast loading times and Core Web Vitals compliance
 
+## Development Workflow
+
+**Pull Requests Required:** All changes must be submitted via Pull Requests (PRs) to merge into the `main` branch. Direct pushes to `main` are not allowed.
+
 ## Deployment
+
+The website is automatically deployed when a new release is created. The deployment process:
+
+1. Create a new release with a version tag (e.g., `v1.0.0`)
+2. The GitHub Actions workflow will automatically:
+   - Build the site
+   - Deploy it to the production server
 
 The `dist/` folder contains static files that can be deployed to any static hosting service:
 
