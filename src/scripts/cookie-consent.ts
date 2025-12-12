@@ -80,6 +80,224 @@ function removeGoogleAnalytics() {
   delete (window as any).gtag;
 }
 
+// Helper function to check Cal status
+function checkCalStatus() {
+  return (window as any).Cal && (window as any).Cal.loaded;
+}
+
+// Helper function to clear Cal.com queue if element doesn't exist
+function clearCalQueueIfElementMissing() {
+  const element = document.getElementById('my-cal-inline-15min');
+  if (!element && (window as any).Cal && (window as any).Cal.ns && (window as any).Cal.ns["15min"]) {
+    // Clear the queue to prevent errors
+    if ((window as any).Cal.ns["15min"].q) {
+      (window as any).Cal.ns["15min"].q = [];
+    }
+  }
+}
+
+// Function to load Cal.com embed
+function loadCalCom() {
+  // First check if the target element exists - only initialize if it does
+  const targetElement = document.getElementById('my-cal-inline-15min');
+  if (!targetElement) {
+    // Element doesn't exist on this page, don't load Cal.com
+    return;
+  }
+
+  // Check if Cal.com is already loaded and initialized
+  if (checkCalStatus()) {
+    // Re-initialize if already loaded but check if namespace exists
+    if ((window as any).Cal.ns && (window as any).Cal.ns["15min"]) {
+      initializeCalComEmbed();
+    }
+    return;
+  }
+
+  // Check if script is already in the DOM
+  const existingScript = document.querySelector('script[src*="app.cal.eu/embed/embed.js"]');
+  if (existingScript) {
+    // Script is loading, wait for it and then initialize
+    const checkCal = setInterval(() => {
+      if (checkCalStatus() && document.getElementById('my-cal-inline-15min')) {
+        clearInterval(checkCal);
+        initializeCalComEmbed();
+      }
+    }, 50);
+    // Timeout after 5 seconds
+    setTimeout(() => clearInterval(checkCal), 5000);
+    return;
+  }
+
+  // Initialize Cal.com embed loader
+  (function (C: any, A: string, L: string) { 
+    let p = function (a: any, ar: any) { a.q.push(ar); }; 
+    let d = C.document; 
+    C.Cal = C.Cal || function () { 
+      let cal = C.Cal; 
+      let ar = arguments; 
+      if (!cal.loaded) { 
+        cal.ns = {}; 
+        cal.q = cal.q || []; 
+        const script = d.createElement("script");
+        script.src = A;
+        script.onload = () => {
+          // Wait a bit for Cal to initialize, then set up the embed
+          // Only initialize if element still exists
+          setTimeout(() => {
+            if (document.getElementById('my-cal-inline-15min')) {
+              initializeCalComEmbed();
+            }
+          }, 100);
+        };
+        d.head.appendChild(script);
+        cal.loaded = true; 
+      } 
+      if (ar[0] === L) { 
+        const api = function () { p(api, arguments); }; 
+        const namespace = ar[1]; 
+        const apiQueue: any[] = (api as any).q || [];
+        (api as any).q = apiQueue;
+        if(typeof namespace === "string"){
+          cal.ns[namespace] = cal.ns[namespace] || api;
+          p(cal.ns[namespace], ar);
+          p(cal, ["initNamespace", namespace]);
+        } else p(cal, ar); 
+        return;
+      } 
+      p(cal, ar); 
+    }; 
+  })(window, "https://app.cal.eu/embed/embed.js", "init");
+  
+  // Only queue initialization commands if element exists
+  if (document.getElementById('my-cal-inline-15min')) {
+    // Queue initialization commands (they'll execute when script loads)
+    (window as any).Cal("init", "15min", {origin:"https://app.cal.eu"});
+
+    (window as any).Cal.ns = (window as any).Cal.ns || {};
+    if (!(window as any).Cal.ns["15min"]) {
+      const queue: any[] = [];
+      (window as any).Cal.ns["15min"] = function(...args: any[]) {
+        // Only queue if element exists
+        if (document.getElementById('my-cal-inline-15min')) {
+          queue.push(args);
+        }
+      };
+      (window as any).Cal.ns["15min"].q = queue;
+    }
+  }
+}
+
+// Track if Cal.com embed has been initialized to prevent duplicate initialization
+let calComInitialized = false;
+
+// Helper function to initialize Cal.com embed
+function initializeCalComEmbed() {
+  // Check if already initialized
+  if (calComInitialized) {
+    return;
+  }
+
+  // Check if the target element exists - if not, don't initialize
+  const targetElement = document.getElementById('my-cal-inline-15min');
+  if (!targetElement) {
+    // Element doesn't exist on this page, silently return
+    return;
+  }
+
+  // Check if Cal.com embed is already rendered in the element
+  const hasCalContent = targetElement.querySelector('[data-cal-namespace]') || 
+                        targetElement.querySelector('iframe');
+  if (hasCalContent) {
+    // Already initialized, mark as such and return
+    calComInitialized = true;
+    window.dispatchEvent(new CustomEvent('calcom-loaded'));
+    return;
+  }
+
+  // Make sure Cal is loaded and namespace exists
+  if (!(window as any).Cal || !(window as any).Cal.loaded) {
+    // Wait for Cal to load
+    setTimeout(() => {
+      if ((window as any).Cal && (window as any).Cal.loaded && document.getElementById('my-cal-inline-15min') && !calComInitialized) {
+        initializeCalComEmbed();
+      }
+    }, 100);
+    return;
+  }
+
+  if (!(window as any).Cal.ns || !(window as any).Cal.ns["15min"]) {
+    return;
+  }
+
+  try {
+    (window as any).Cal.ns["15min"]("inline", {
+      elementOrSelector:"#my-cal-inline-15min",
+      config: {"layout":"month_view"},
+      calLink: "gaworski/15min",
+    });
+
+    (window as any).Cal.ns["15min"]("ui", {"hideEventTypeDetails":false,"layout":"month_view"});
+
+    // Mark as initialized
+    calComInitialized = true;
+
+    // Dispatch event to notify that Cal.com is loaded
+    window.dispatchEvent(new CustomEvent('calcom-loaded'));
+  } catch (error) {
+    // Silently handle errors - element might not be ready yet
+    // Only log if element exists (to avoid console spam on pages without the element)
+    if (document.getElementById('my-cal-inline-15min')) {
+      console.warn('Cal.com initialization error:', error);
+      // Retry after a short delay only if element exists and not already initialized
+      setTimeout(() => {
+        if (document.getElementById('my-cal-inline-15min') && !calComInitialized) {
+          initializeCalComEmbed();
+        }
+      }, 500);
+    }
+  }
+}
+
+// Function to remove Cal.com embed
+function removeCalCom() {
+  // Reset initialization flag
+  calComInitialized = false;
+
+  // Remove Cal.com script
+  const calScript = document.querySelector('script[src*="app.cal.eu/embed/embed.js"]');
+  if (calScript) {
+    calScript.remove();
+  }
+
+  // Clear Cal.com namespace
+  if ((window as any).Cal) {
+    delete (window as any).Cal;
+  }
+
+  // Clear the embed container but preserve placeholder structure
+  const embedContainer = document.getElementById('my-cal-inline-15min');
+  if (embedContainer) {
+    // Only clear if Cal.com content exists, otherwise leave placeholder
+    const calContent = embedContainer.querySelector('[data-cal-namespace]') || 
+                       embedContainer.querySelector('iframe');
+    if (calContent) {
+      embedContainer.innerHTML = `
+        <div class="calcom-consent-placeholder" style="padding: 3rem; text-align: center; color: #666; display: flex; flex-direction: column; justify-content: center; align-items: center; min-height: 600px; width: 100%;">
+          <div class="cookie-icon-wrapper" style="margin-bottom: 1.5rem;">
+            <svg width="64" height="64" viewBox="0 0 24 24" fill="none" stroke="#666" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2a10 10 0 1 0 10 10 4 4 0 0 1-5-5 4 4 0 0 1-5-5Z"></path><path d="M8.5 8.5a.5.5 0 1 1 0-1 .5.5 0 0 1 0 1Z"></path><path d="M15.5 8.5a.5.5 0 1 1 0-1 .5.5 0 0 1 0 1Z"></path></svg>
+          </div>
+          <p style="margin-bottom: 1.5rem; font-size: 1.1rem; margin: 0 0 1.5rem 0;">To book an appointment, please accept functionality cookies in the cookie consent banner.</p>
+          <button id="calcom-cookie-preferences-btn" class="cookie-preferences-btn">Manage Cookie Preferences</button>
+        </div>
+      `;
+    }
+  }
+
+  // Dispatch event to notify Contact component
+  window.dispatchEvent(new CustomEvent('calcom-removed'));
+}
+
 // Initialize cookie consent
 CookieConsent.run({
   categories: {
@@ -88,6 +306,10 @@ CookieConsent.run({
       readOnly: true // User cannot disable
     },
     analytics: {
+      enabled: false, // Requires user consent
+      readOnly: false
+    },
+    functionality: {
       enabled: false, // Requires user consent
       readOnly: false
     }
@@ -146,6 +368,28 @@ CookieConsent.run({
                   }
                 ]
               }
+            },
+            {
+              title: 'Functionality Cookies',
+              description: 'These cookies enable enhanced functionality and personalization, such as the calendar booking service (Cal.com). These services may collect your name, email address, and booking preferences.',
+              linkedCategory: 'functionality',
+              cookieTable: {
+                caption: 'Functionality cookies',
+                headers: {
+                  name: 'Cookie',
+                  domain: 'Domain',
+                  desc: 'Description',
+                  exp: 'Expiration'
+                },
+                body: [
+                  {
+                    name: 'Cal.com cookies',
+                    domain: 'app.cal.eu',
+                    desc: 'Cookies set by Cal.com for booking functionality and session management',
+                    exp: 'Session / varies'
+                  }
+                ]
+              }
             }
           ]
         }
@@ -201,6 +445,28 @@ CookieConsent.run({
                   }
                 ]
               }
+            },
+            {
+              title: 'Funktions-Cookies',
+              description: 'Diese Cookies ermöglichen erweiterte Funktionen und Personalisierung, wie z.B. den Kalender-Buchungsservice (Cal.com). Diese Dienste können Ihren Namen, Ihre E-Mail-Adresse und Ihre Buchungspräferenzen sammeln.',
+              linkedCategory: 'functionality',
+              cookieTable: {
+                caption: 'Funktions-Cookies',
+                headers: {
+                  name: 'Cookie',
+                  domain: 'Domain',
+                  desc: 'Beschreibung',
+                  exp: 'Ablauf'
+                },
+                body: [
+                  {
+                    name: 'Cal.com Cookies',
+                    domain: 'app.cal.eu',
+                    desc: 'Von Cal.com gesetzte Cookies für Buchungsfunktionalität und Sitzungsverwaltung',
+                    exp: 'Sitzung / variabel'
+                  }
+                ]
+              }
             }
           ]
         }
@@ -224,6 +490,7 @@ CookieConsent.run({
   onConsent: ({ cookie }) => {
     // This callback is triggered when consent is given or changed
     const analyticsConsent = CookieConsent.acceptedCategory('analytics');
+    const functionalityConsent = CookieConsent.acceptedCategory('functionality');
     
     if (analyticsConsent && gaTrackingId) {
       // Load Google Analytics only if consent is given
@@ -232,20 +499,82 @@ CookieConsent.run({
       // Remove GA if consent is withdrawn
       removeGoogleAnalytics();
     }
+
+    if (functionalityConsent) {
+      // Load Cal.com only if consent is given
+      loadCalCom();
+    } else {
+      // Remove Cal.com if consent is withdrawn
+      removeCalCom();
+    }
   },
   onFirstConsent: ({ cookie }) => {
     // This callback is triggered on first consent
     const analyticsConsent = CookieConsent.acceptedCategory('analytics');
+    const functionalityConsent = CookieConsent.acceptedCategory('functionality');
     
     if (analyticsConsent && gaTrackingId) {
       loadGoogleAnalytics(gaTrackingId);
     }
+
+    if (functionalityConsent) {
+      // Check if element exists before loading
+      if (document.getElementById('my-cal-inline-15min')) {
+        loadCalCom();
+      }
+    }
   }
 });
 
+// Clear Cal.com queue on page load if element doesn't exist (prevent errors from previous pages)
+if (document.readyState === 'loading') {
+  document.addEventListener('DOMContentLoaded', clearCalQueueIfElementMissing);
+} else {
+  clearCalQueueIfElementMissing();
+}
+
 // Check if consent was already given on page load
 const analyticsConsent = CookieConsent.acceptedCategory('analytics');
+const functionalityConsent = CookieConsent.acceptedCategory('functionality');
+
 if (analyticsConsent && gaTrackingId) {
   loadGoogleAnalytics(gaTrackingId);
 }
+
+// Only load Cal.com if consent is given AND the element exists on this page
+if (functionalityConsent) {
+  // Wait for DOM to be ready, then check for element
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', () => {
+      clearCalQueueIfElementMissing();
+      if (document.getElementById('my-cal-inline-15min')) {
+        loadCalCom();
+      }
+    });
+  } else {
+    // DOM already loaded, check immediately
+    clearCalQueueIfElementMissing();
+    if (document.getElementById('my-cal-inline-15min')) {
+      loadCalCom();
+    }
+  }
+}
+
+// Function to open cookie preferences modal
+function openCookiePreferences() {
+  CookieConsent.showPreferences();
+}
+
+// Export functions for use in other components
+declare global {
+  interface Window {
+    loadCalCom: () => void;
+    removeCalCom: () => void;
+    openCookiePreferences: () => void;
+  }
+}
+
+window.loadCalCom = loadCalCom;
+window.removeCalCom = removeCalCom;
+window.openCookiePreferences = openCookiePreferences;
 

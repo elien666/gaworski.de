@@ -11,7 +11,7 @@ This is the source code for my personal marketing website, showcasing my experti
 ## Connect
 
 - **LinkedIn:** [linkedin.com/in/gaworski](https://linkedin.com/in/gaworski)
-- **Email:** bjoern@gaworski.de
+- **Email:** info@gaworski.de
 
 ## Repository Status
 
@@ -68,19 +68,23 @@ Visit `http://localhost:4321` to see the site.
 
 #### Environment Variables
 
-Create a `.env` file in the root directory and add your Google Analytics tracking ID:
+Create a `.env` file in the root directory and add your configuration:
 
 ```bash
-echo "PUBLIC_GA_TRACKING_ID=G-XXXXXXXXXX" > .env
+PUBLIC_GA_TRACKING_ID=G-XXXXXXXXXX
+PUBLIC_CALCOM_URL=https://cal.com/your-username/15min
 ```
 
 Or manually create the file with:
 
 ```
 PUBLIC_GA_TRACKING_ID=G-XXXXXXXXXX
+PUBLIC_CALCOM_URL=https://cal.com/your-username/15min
 ```
 
-**Note:** The Google Analytics tracking ID is optional. If not provided, the cookie consent banner will still appear, but analytics will not be loaded.
+**Notes:**
+- The Google Analytics tracking ID is optional. If not provided, the cookie consent banner will still appear, but analytics will not be loaded.
+- The Cal.com URL is optional. If not provided, the Contact component will display a fallback email link. To get your Cal.com embed URL, go to your Cal.com dashboard → Event Types → select your event → Embed section, and copy the inline embed URL.
 
 ### Build
 
@@ -105,6 +109,7 @@ npm run preview
 - **Performance optimized** - Fast loading times and Core Web Vitals compliance
 - **GDPR-compliant cookie consent** - Vanilla Cookie Consent integration with Google Analytics support
 - **Privacy-first analytics** - Google Analytics only loads with explicit user consent
+- **Integrated booking** - Cal.com embedded calendar for direct appointment scheduling
 
 ## Development Workflow
 

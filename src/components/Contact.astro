@@ -1,16 +1,146 @@
 ---
+import { Cookie } from '@lucide/astro';
 ---
 
 <section id="contact" class="py-20 bg-gray-900">
-  <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-    <!-- Applying font-headline -->
-    <h2 class="text-3xl md:text-4xl font-extrabold text-white mb-4 font-headline">Ready to Stop the Bleeding?</h2>
-    <p class="text-xl text-gray-300 mb-10">
-      If your project is stalled, your team is blocked, or your time-to-market is too slow, let's schedule a 15-minute diagnostic call.
-    </p>
-    <a href="mailto:bg@tty7.de?subject=Inquiry%20about%20Product%20Rescue%20Sprint%20from%20gaworski.de" class="inline-block bg-secondary text-white text-xl font-bold px-10 py-4 rounded-xl shadow-xl hover:bg-secondary-focus transition duration-300 transform hover:scale-105">
-      Start a Conversation &rarr;
-    </a>
+  <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+    <div class="text-center mb-10">
+      <!-- Applying font-headline -->
+      <h2 class="text-3xl md:text-4xl font-extrabold text-white mb-4 font-headline">Ready to Stop the Bleeding?</h2>
+      <p class="text-xl text-gray-300">
+        If your project is stalled, your team is blocked, or your time-to-market is too slow, let's schedule a 15-minute diagnostic call.
+      </p>
+    </div>
+    
+    <!-- Cal inline embed code - loaded conditionally based on cookie consent -->
+    <div class="calcom-embed-wrapper bg-white rounded-lg shadow-xl overflow-hidden mb-8">
+      <div style="width:100%;height:100%;" id="my-cal-inline-15min">
+        <div class="calcom-consent-placeholder" style="padding: 3rem; text-align: center; color: #666; display: flex; flex-direction: column; justify-content: center; align-items: center; min-height: 600px; width: 100%;">
+          <div class="cookie-icon-wrapper" style="margin-bottom: 1.5rem;">
+            <Cookie size={64} color="#666" stroke-width={1.5} />
+          </div>
+          <p style="margin-bottom: 1.5rem; font-size: 1.1rem; margin: 0 0 1.5rem 0;">To book an appointment, please accept functionality cookies in the cookie consent banner.</p>
+          <button id="calcom-cookie-preferences-btn" class="cookie-preferences-btn">Manage Cookie Preferences</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Alternative contact methods -->
+    <div class="text-center">
+      <p class="text-gray-300 text-lg mb-4">
+        Prefer to reach out directly? You can also connect with me on <a href="https://linkedin.com/in/gaworski" target="_blank" rel="noopener noreferrer" class="text-secondary hover:text-secondary-focus font-semibold underline transition duration-150">LinkedIn</a> or send me an <a href="mailto:info@gaworski.de" class="text-secondary hover:text-secondary-focus font-semibold underline transition duration-150">email</a>.
+      </p>
+    </div>
   </div>
 </section>
+
+<script>
+  function hidePlaceholder() {
+    const placeholder = document.querySelector('.calcom-consent-placeholder');
+    if (placeholder) {
+      (placeholder as HTMLElement).style.display = 'none';
+    }
+  }
+
+  function showPlaceholder() {
+    const placeholder = document.querySelector('.calcom-consent-placeholder');
+    if (placeholder) {
+      (placeholder as HTMLElement).style.display = 'flex';
+    }
+  }
+
+  function checkCalComStatus() {
+    // Check if Cal.com script exists and is loaded
+    const calScript = document.querySelector('script[src*="app.cal.eu/embed/embed.js"]');
+    const hasCalLoaded = (window as any).Cal && (window as any).Cal.loaded;
+    const hasCalContent = document.querySelector('#my-cal-inline-15min')?.querySelector('[data-cal-namespace]') || 
+                         document.querySelector('#my-cal-inline-15min')?.querySelector('iframe');
+    
+    if (hasCalLoaded || calScript || hasCalContent) {
+      // Cal.com is loaded, hide placeholder
+      hidePlaceholder();
+    } else {
+      // Cal.com is not loaded, show placeholder
+      showPlaceholder();
+    }
+  }
+
+  // Listen for Cal.com loaded event from cookie-consent.ts
+  window.addEventListener('calcom-loaded', () => {
+    // Wait a bit for Cal.com to render, then check
+    setTimeout(checkCalComStatus, 200);
+  });
+  
+  // Listen for Cal.com removed event
+  window.addEventListener('calcom-removed', () => {
+    showPlaceholder();
+  });
+  
+  // Check on page load if Cal.com is already loaded
+  document.addEventListener('DOMContentLoaded', () => {
+    checkCalComStatus();
+
+    // Cookie preferences button in placeholder
+    const calcomCookieBtn = document.getElementById('calcom-cookie-preferences-btn');
+    if (calcomCookieBtn) {
+      calcomCookieBtn.addEventListener('click', () => {
+        if ((window as any).openCookiePreferences) {
+          (window as any).openCookiePreferences();
+        }
+      });
+    }
+
+    // Periodically check for Cal.com status (for cases where it loads slowly)
+    const statusCheckInterval = setInterval(() => {
+      checkCalComStatus();
+      // Stop checking after 10 seconds
+      setTimeout(() => clearInterval(statusCheckInterval), 10000);
+    }, 500);
+  });
+</script>
+
+<style>
+  .calcom-embed-wrapper {
+    position: relative;
+    width: 100%;
+    min-height: 600px;
+  }
+  
+  #my-cal-inline-15min {
+    min-height: 600px;
+    position: relative;
+  }
+  
+  .calcom-consent-placeholder {
+    min-height: 600px;
+  }
+  
+  .cookie-preferences-btn {
+    background: #0F2C67;
+    color: white;
+    border: none;
+    padding: 0.75rem 1.5rem;
+    border-radius: 0.5rem;
+    font-size: 0.9rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background-color 0.3s;
+    font-family: inherit;
+  }
+  
+  .cookie-preferences-btn:hover {
+    background: #00C4CC;
+  }
+  
+  /* Responsive adjustments for mobile */
+  @media (max-width: 640px) {
+    .calcom-embed-wrapper {
+      min-height: 700px;
+    }
+    
+    #my-cal-inline-15min {
+      min-height: 700px;
+    }
+  }
+</style>
 
