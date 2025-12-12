@@ -1,43 +1,94 @@
-# Astro Starter Kit: Minimal
+# gaworski.de - Personal Marketing, CV and Portfolio
 
-```sh
-npm create astro@latest -- --template minimal
+A simple static website built with Astro, Tailwind CSS, and DaisyUI.
+
+## Tech Stack
+
+- **Astro** v5.16.5 - Static site generator
+- **Tailwind CSS** v4.1.18 - Utility-first CSS framework
+- **DaisyUI** v5.5.13 - Component library for Tailwind CSS
+- **TypeScript** - Built-in support
+
+## Project Structure
+
 ```
-
-> 🧑‍🚀 **Seasoned astronaut?** Delete this file. Have fun!
-
-## 🚀 Project Structure
-
-Inside of your Astro project, you'll see the following folders and files:
-
-```text
 /
-├── public/
+├── public/          # Static assets (favicon, etc.)
 ├── src/
-│   └── pages/
-│       └── index.astro
+│   ├── assets/      # Images, fonts, etc.
+│   ├── components/  # Reusable Astro components
+│   │   ├── Hero.astro
+│   │   ├── About.astro
+│   │   ├── CV.astro
+│   │   ├── Portfolio.astro
+│   │   └── Contact.astro
+│   ├── layouts/     # Layout components
+│   │   └── Layout.astro
+│   ├── pages/       # Pages/routes
+│   │   └── index.astro
+│   ├── scripts/     # Client-side JavaScript
+│   │   └── main.js
+│   └── styles/      # Global styles
+│       └── global.css
+├── astro.config.mjs # Astro configuration
+├── tailwind.config.mjs # Tailwind + DaisyUI configuration
 └── package.json
 ```
 
-Astro looks for `.astro` or `.md` files in the `src/pages/` directory. Each page is exposed as a route based on its file name.
+## Getting Started
 
-There's nothing special about `src/components/`, but that's where we like to put any Astro/React/Vue/Svelte/Preact components.
+### Development
 
-Any static assets, like images, can be placed in the `public/` directory.
+```bash
+npm install
+npm run dev
+```
 
-## 🧞 Commands
+Visit `http://localhost:4321` to see your site.
 
-All commands are run from the root of the project, from a terminal:
+### Build
 
-| Command                   | Action                                           |
-| :------------------------ | :----------------------------------------------- |
-| `npm install`             | Installs dependencies                            |
-| `npm run dev`             | Starts local dev server at `localhost:4321`      |
-| `npm run build`           | Build your production site to `./dist/`          |
-| `npm run preview`         | Preview your build locally, before deploying     |
-| `npm run astro ...`       | Run CLI commands like `astro add`, `astro check` |
-| `npm run astro -- --help` | Get help using the Astro CLI                     |
+```bash
+npm run build
+```
 
-## 👀 Want to learn more?
+This creates a `dist/` folder with your static site ready to deploy.
 
-Feel free to check [our documentation](https://docs.astro.build) or jump into our [Discord server](https://astro.build/chat).
+### Preview
+
+```bash
+npm run preview
+```
+
+Preview your production build locally.
+
+## Features
+
+- Zero JavaScript by default (optimal performance)
+- DaisyUI components for beautiful, consistent UI
+- Responsive design out of the box
+- Smooth scrolling navigation
+- Form handling with validation
+- Fade-in animations on scroll
+- Dark/light theme support (DaisyUI)
+
+## Customization
+
+- Edit components in `src/components/` to customize sections
+- Modify `tailwind.config.mjs` to customize DaisyUI themes
+- Update `src/layouts/Layout.astro` to change the overall layout
+- Add your content in the respective component files
+
+## Deployment
+
+The `dist/` folder contains static files that can be deployed to:
+- GitHub Pages
+- Netlify
+- Vercel
+- Any static hosting service
+
+## Learn More
+
+- [Astro Documentation](https://docs.astro.build)
+- [Tailwind CSS Documentation](https://tailwindcss.com/docs)
+- [DaisyUI Documentation](https://daisyui.com/docs)
