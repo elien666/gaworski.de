@@ -83,6 +83,10 @@ const fullTitle = title.includes('Gaworski') ? title : `${title} | Gaworski Prod
           <p class="text-sm md:text-base">© 2025 Gaworski Product & Solution Design. | Hamburg, Germany.</p>
           <p class="text-sm md:text-base mt-2">
             <a href="/imprint" class="hover:text-white transition duration-150">Imprint</a>
+            <span class="mx-2">|</span>
+            <a href="/imprint#privacy" class="hover:text-white transition duration-150">Privacy Policy</a>
+            <span class="mx-2">|</span>
+            <button id="cookie-preferences-btn" class="hover:text-white transition duration-150 bg-transparent border-none text-gray-400 cursor-pointer text-sm md:text-base" style="background: none; border: none; padding: 0; font: inherit; cursor: pointer;">Cookie Preferences</button>
           </p>
         </aside>
       </footer>
@@ -150,6 +154,16 @@ const fullTitle = title.includes('Gaworski') ? title : `${title} | Gaworski Prod
             e.preventDefault();
             e.stopPropagation();
             window.location.href = '/secret-do-not-look/';
+          });
+        }
+
+        // Cookie preferences button
+        const cookiePreferencesBtn = document.getElementById('cookie-preferences-btn');
+        if (cookiePreferencesBtn) {
+          cookiePreferencesBtn.addEventListener('click', () => {
+            if (window.openCookiePreferences) {
+              window.openCookiePreferences();
+            }
           });
         }
       });

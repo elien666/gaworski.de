@@ -80,6 +80,108 @@ function removeGoogleAnalytics() {
   delete (window as any).gtag;
 }
 
+// Function to load Cal.com embed
+function loadCalCom() {
+  // Check if Cal.com is already loaded and initialized
+  if ((window as any).Cal && (window as any).Cal.loaded) {
+    // Re-initialize if already loaded but check if namespace exists
+    if ((window as any).Cal.ns && (window as any).Cal.ns["15min"]) {
+      (window as any).Cal.ns["15min"]("inline", {
+        elementOrSelector:"#my-cal-inline-15min",
+        config: {"layout":"month_view"},
+        calLink: "gaworski/15min",
+      });
+      (window as any).Cal.ns["15min"]("ui", {"hideEventTypeDetails":false,"layout":"month_view"});
+      window.dispatchEvent(new CustomEvent('calcom-loaded'));
+    }
+    return;
+  }
+
+  // Initialize Cal.com embed loader
+  (function (C, A, L) { 
+    let p = function (a, ar) { a.q.push(ar); }; 
+    let d = C.document; 
+    C.Cal = C.Cal || function () { 
+      let cal = C.Cal; 
+      let ar = arguments; 
+      if (!cal.loaded) { 
+        cal.ns = {}; 
+        cal.q = cal.q || []; 
+        d.head.appendChild(d.createElement("script")).src = A; 
+        cal.loaded = true; 
+      } 
+      if (ar[0] === L) { 
+        const api = function () { p(api, arguments); }; 
+        const namespace = ar[1]; 
+        api.q = api.q || []; 
+        if(typeof namespace === "string"){
+          cal.ns[namespace] = cal.ns[namespace] || api;
+          p(cal.ns[namespace], ar);
+          p(cal, ["initNamespace", namespace]);
+        } else p(cal, ar); 
+        return;
+      } 
+      p(cal, ar); 
+    }; 
+  })(window, "https://app.cal.eu/embed/embed.js", "init");
+  
+  // Queue initialization commands (they'll execute when script loads)
+  (window as any).Cal("init", "15min", {origin:"https://app.cal.eu"});
+
+  (window as any).Cal.ns = (window as any).Cal.ns || {};
+  if (!(window as any).Cal.ns["15min"]) {
+    (window as any).Cal.ns["15min"] = function(...args: any[]) {
+      ((window as any).Cal.ns["15min"].q = (window as any).Cal.ns["15min"].q || []).push(args);
+    };
+    (window as any).Cal.ns["15min"].q = [];
+  }
+  
+  (window as any).Cal.ns["15min"]("inline", {
+    elementOrSelector:"#my-cal-inline-15min",
+    config: {"layout":"month_view"},
+    calLink: "gaworski/15min",
+  });
+
+  (window as any).Cal.ns["15min"]("ui", {"hideEventTypeDetails":false,"layout":"month_view"});
+
+  // Dispatch event after a short delay to allow script to load
+  setTimeout(() => {
+    window.dispatchEvent(new CustomEvent('calcom-loaded'));
+  }, 100);
+}
+
+// Function to remove Cal.com embed
+function removeCalCom() {
+  // Remove Cal.com script
+  const calScript = document.querySelector('script[src*="app.cal.eu/embed/embed.js"]');
+  if (calScript) {
+    calScript.remove();
+  }
+
+  // Clear Cal.com namespace
+  if ((window as any).Cal) {
+    delete (window as any).Cal;
+  }
+
+  // Clear the embed container but preserve placeholder structure
+  const embedContainer = document.getElementById('my-cal-inline-15min');
+  if (embedContainer) {
+    // Only clear if Cal.com content exists, otherwise leave placeholder
+    const calContent = embedContainer.querySelector('[data-cal-namespace]');
+    if (calContent) {
+      embedContainer.innerHTML = `
+        <div class="calcom-consent-placeholder" style="padding: 3rem; text-align: center; color: #666; display: flex; flex-direction: column; justify-content: center; align-items: center; min-height: 600px; width: 100%;">
+          <p style="margin-bottom: 1rem; font-size: 1.1rem; margin: 0 0 1rem 0;">To book an appointment, please accept functionality cookies in the cookie consent banner.</p>
+          <p style="font-size: 0.9rem; color: #999; margin: 0;">The calendar booking service requires your consent to load.</p>
+        </div>
+      `;
+    }
+  }
+
+  // Dispatch event to notify Contact component
+  window.dispatchEvent(new CustomEvent('calcom-removed'));
+}
+
 // Initialize cookie consent
 CookieConsent.run({
   categories: {
@@ -88,6 +190,10 @@ CookieConsent.run({
       readOnly: true // User cannot disable
     },
     analytics: {
+      enabled: false, // Requires user consent
+      readOnly: false
+    },
+    functionality: {
       enabled: false, // Requires user consent
       readOnly: false
     }
@@ -146,6 +252,28 @@ CookieConsent.run({
                   }
                 ]
               }
+            },
+            {
+              title: 'Functionality Cookies',
+              description: 'These cookies enable enhanced functionality and personalization, such as the calendar booking service (Cal.com). These services may collect your name, email address, and booking preferences.',
+              linkedCategory: 'functionality',
+              cookieTable: {
+                caption: 'Functionality cookies',
+                headers: {
+                  name: 'Cookie',
+                  domain: 'Domain',
+                  desc: 'Description',
+                  exp: 'Expiration'
+                },
+                body: [
+                  {
+                    name: 'Cal.com cookies',
+                    domain: 'app.cal.eu',
+                    desc: 'Cookies set by Cal.com for booking functionality and session management',
+                    exp: 'Session / varies'
+                  }
+                ]
+              }
             }
           ]
         }
@@ -201,6 +329,28 @@ CookieConsent.run({
                   }
                 ]
               }
+            },
+            {
+              title: 'Funktions-Cookies',
+              description: 'Diese Cookies ermöglichen erweiterte Funktionen und Personalisierung, wie z.B. den Kalender-Buchungsservice (Cal.com). Diese Dienste können Ihren Namen, Ihre E-Mail-Adresse und Ihre Buchungspräferenzen sammeln.',
+              linkedCategory: 'functionality',
+              cookieTable: {
+                caption: 'Funktions-Cookies',
+                headers: {
+                  name: 'Cookie',
+                  domain: 'Domain',
+                  desc: 'Beschreibung',
+                  exp: 'Ablauf'
+                },
+                body: [
+                  {
+                    name: 'Cal.com Cookies',
+                    domain: 'app.cal.eu',
+                    desc: 'Von Cal.com gesetzte Cookies für Buchungsfunktionalität und Sitzungsverwaltung',
+                    exp: 'Sitzung / variabel'
+                  }
+                ]
+              }
             }
           ]
         }
@@ -224,6 +374,7 @@ CookieConsent.run({
   onConsent: ({ cookie }) => {
     // This callback is triggered when consent is given or changed
     const analyticsConsent = CookieConsent.acceptedCategory('analytics');
+    const functionalityConsent = CookieConsent.acceptedCategory('functionality');
     
     if (analyticsConsent && gaTrackingId) {
       // Load Google Analytics only if consent is given
@@ -232,20 +383,57 @@ CookieConsent.run({
       // Remove GA if consent is withdrawn
       removeGoogleAnalytics();
     }
+
+    if (functionalityConsent) {
+      // Load Cal.com only if consent is given
+      loadCalCom();
+    } else {
+      // Remove Cal.com if consent is withdrawn
+      removeCalCom();
+    }
   },
   onFirstConsent: ({ cookie }) => {
     // This callback is triggered on first consent
     const analyticsConsent = CookieConsent.acceptedCategory('analytics');
+    const functionalityConsent = CookieConsent.acceptedCategory('functionality');
     
     if (analyticsConsent && gaTrackingId) {
       loadGoogleAnalytics(gaTrackingId);
+    }
+
+    if (functionalityConsent) {
+      loadCalCom();
     }
   }
 });
 
 // Check if consent was already given on page load
 const analyticsConsent = CookieConsent.acceptedCategory('analytics');
+const functionalityConsent = CookieConsent.acceptedCategory('functionality');
+
 if (analyticsConsent && gaTrackingId) {
   loadGoogleAnalytics(gaTrackingId);
 }
+
+if (functionalityConsent) {
+  loadCalCom();
+}
+
+// Function to open cookie preferences modal
+function openCookiePreferences() {
+  CookieConsent.showPreferences();
+}
+
+// Export functions for use in other components
+declare global {
+  interface Window {
+    loadCalCom: () => void;
+    removeCalCom: () => void;
+    openCookiePreferences: () => void;
+  }
+}
+
+window.loadCalCom = loadCalCom;
+window.removeCalCom = removeCalCom;
+window.openCookiePreferences = openCookiePreferences;
 
