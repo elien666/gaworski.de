@@ -5,9 +5,10 @@ import Header from '../components/Header.astro';
 interface Props {
   title: string;
   description?: string;
+  showNav?: boolean;
 }
 
-const { title, description = 'Gaworski Product & Solution Design | Product Rescue & Acceleration' } = Astro.props;
+const { title, description = 'Gaworski Product & Solution Design | Product Rescue & Acceleration', showNav = true } = Astro.props;
 ---
 
 <!doctype html>
@@ -24,7 +25,7 @@ const { title, description = 'Gaworski Product & Solution Design | Product Rescu
   </head>
   <body class="antialiased text-gray-800 font-sans">
     <div class="min-h-screen bg-base-100">
-      <Header />
+      <Header showNav={showNav} />
       <main>
         <slot />
       </main>
