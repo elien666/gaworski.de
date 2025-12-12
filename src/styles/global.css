@@ -5,8 +5,8 @@
 
 /* Font configuration - easily changeable */
 @theme {
-  --font-family-sans: 'Source Sans 3', sans-serif;
-  --font-family-headline: 'Poppins', sans-serif;
+  --font-family-sans: 'Fira Sans', sans-serif;
+  --font-family-headline: 'Montserrat', sans-serif;
 }
 
 @plugin "daisyui/theme" {
