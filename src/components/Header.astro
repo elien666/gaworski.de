@@ -4,9 +4,10 @@ import logo from '../assets/logo.svg';
 
 interface Props {
   showNav?: boolean;
+  showAllNavItems?: boolean;
 }
 
-const { showNav = true } = Astro.props;
+const { showNav = true, showAllNavItems = true } = Astro.props;
 ---
 
 <header class="sticky top-0 z-50 bg-white">
@@ -35,10 +36,14 @@ const { showNav = true } = Astro.props;
     {showNav && (
       <>
         <nav class="space-x-8 hidden sm:flex items-center">
-          <a href="#services" class="text-gray-600 hover:text-primary transition duration-150">Services</a>
-          <a href="#process" class="text-gray-600 hover:text-primary transition duration-150">The Method</a>
-          <a href="#about" class="text-gray-600 hover:text-primary transition duration-150">About Me</a>
-          <a href="#contact" class="text-white bg-primary px-4 py-2 rounded-lg font-medium shadow-md hover:bg-secondary transition duration-150">Contact</a>
+          {showAllNavItems && (
+            <>
+              <a href="#services" class="text-gray-600 hover:text-primary transition duration-150">Services</a>
+              <a href="#process" class="text-gray-600 hover:text-primary transition duration-150">The Method</a>
+              <a href="#about" class="text-gray-600 hover:text-primary transition duration-150">About Me</a>
+            </>
+          )}
+          <a href={showAllNavItems ? "#contact" : "/#contact"} class="text-white bg-primary px-4 py-2 rounded-lg font-medium shadow-md hover:bg-secondary transition duration-150">Contact</a>
         </nav>
         <!-- Mobile Menu Placeholder -->
         <button class="sm:hidden text-gray-600 hover:text-primary" aria-label="Menu">

@@ -7,6 +7,7 @@ interface Props {
   title: string;
   description?: string;
   showNav?: boolean;
+  showAllNavItems?: boolean;
   image?: string;
   type?: string;
 }
@@ -15,6 +16,7 @@ const {
   title, 
   description = 'Gaworski Product & Solution Design | Product Rescue & Acceleration', 
   showNav = true,
+  showAllNavItems = true,
   image = '/android-chrome-512x512.png',
   type = 'website'
 } = Astro.props;
@@ -74,7 +76,7 @@ const fullTitle = title.includes('Gaworski') ? title : `${title} | Gaworski Prod
   </head>
   <body class="antialiased text-gray-800 font-sans">
     <div class="min-h-screen bg-base-100">
-      <Header showNav={showNav} />
+      <Header showNav={showNav} showAllNavItems={showAllNavItems} />
       <main>
         <slot />
       </main>
@@ -95,16 +97,26 @@ const fullTitle = title.includes('Gaworski') ? title : `${title} | Gaworski Prod
     <script is:inline>
       // Smooth scrolling for anchor links
       document.addEventListener('DOMContentLoaded', () => {
-        // Smooth scroll for navigation links
-        const links = document.querySelectorAll('a[href^="#"]');
+        // Smooth scroll for navigation links (handles both #anchor and /#anchor)
+        const links = document.querySelectorAll('a[href^="#"], a[href^="/#"]');
         
         links.forEach(link => {
           link.addEventListener('click', (e) => {
             const href = link.getAttribute('href');
-            if (href === '#') return;
+            if (href === '#' || href === '/') return;
+            
+            // Extract anchor from href (handles both #anchor and /#anchor)
+            const anchor = href.startsWith('/#') ? href.substring(1) : href;
+            
+            // If link goes to another page (/#contact), let browser handle navigation
+            // Otherwise, smooth scroll on current page
+            if (href.startsWith('/#') && window.location.pathname !== '/') {
+              // This is a cross-page link, browser will handle navigation
+              return;
+            }
             
             e.preventDefault();
-            const target = document.querySelector(href);
+            const target = document.querySelector(anchor);
             
             if (target) {
               target.scrollIntoView({
