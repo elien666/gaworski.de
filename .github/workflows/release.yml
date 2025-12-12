@@ -64,8 +64,53 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: Deploy
+      - name: Upload dist artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: dist
+          path: dist/
+          retention-days: 1
+
+  deploy:
+    runs-on: ubuntu-latest
+    needs: release
+    if: success()
+    
+    steps:
+      - name: Download dist artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: dist
+          path: dist/
+
+      - name: Set default SSH port
+        id: ssh_port
         run: |
-          echo "Deployment step - to be implemented later"
-          echo "Release ${{ steps.tag.outputs.tag_name }} has been created successfully"
+          PORT="${{ secrets.DEPLOY_PORT }}"
+          if [ -z "$PORT" ]; then
+            PORT="22"
+          fi
+          echo "port=$PORT" >> $GITHUB_OUTPUT
+
+      - name: Copy dist to SSH location
+        uses: appleboy/scp-action@v0.1.7
+        with:
+          host: ${{ secrets.DEPLOY_HOST }}
+          username: ${{ secrets.DEPLOY_USER }}
+          key: ${{ secrets.DEPLOY_SSH_KEY }}
+          port: ${{ steps.ssh_port.outputs.port }}
+          source: "dist/*"
+          target: ${{ secrets.DEPLOY_PATH }}
+
+      - name: Build and restart Docker Compose
+        uses: appleboy/ssh-action@v1.0.3
+        with:
+          host: ${{ secrets.DEPLOY_HOST }}
+          username: ${{ secrets.DEPLOY_USER }}
+          key: ${{ secrets.DEPLOY_SSH_KEY }}
+          port: ${{ steps.ssh_port.outputs.port }}
+          script: |
+            cd ${{ secrets.DOCKER_COMPOSE_PATH }}
+            docker compose build
+            docker compose up -d --force-recreate
 
