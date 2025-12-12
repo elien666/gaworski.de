@@ -1,18 +1,26 @@
 ---
 import Layout from '../layouts/Layout.astro';
-import Hero from '../components/Hero.astro';
-import ProblemSolution from '../components/ProblemSolution.astro';
-import Services from '../components/Services.astro';
-import TheMethod from '../components/TheMethod.astro';
 import About from '../components/About.astro';
-import Contact from '../components/Contact.astro';
 ---
 
-<Layout title="Gaworski Product & Solution Design | Product Rescue & Acceleration">
-  <Hero />
-  <ProblemSolution />
-  <Services />
-  <TheMethod />
+<Layout title="Gaworski Product & Solution Design | Product Rescue & Acceleration" showNav={false}>
+  <!-- Coming Soon Section -->
+  <section class="py-20 md:py-32 bg-white">
+    <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+      <h1 class="text-4xl md:text-6xl font-extrabold leading-tight tracking-tighter mb-6 font-headline">
+        Something Amazing is Being Built
+      </h1>
+      <p class="text-xl md:text-2xl text-gray-600 mb-8">
+        We're crafting something special. Check back soon for updates.
+      </p>
+      <div class="mt-12">
+        <div class="inline-block animate-pulse">
+          <div class="w-16 h-16 border-4 border-primary border-t-transparent rounded-full mx-auto"></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- About Section -->
   <About />
-  <Contact />
 </Layout>
